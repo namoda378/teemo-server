@@ -1,0 +1,186 @@
+{
+  "alive_list": {
+    "package.json": true,
+    "index.js": true,
+    "o3__funcs": true,
+    "oa__model": true,
+    "o1__globals": true,
+    "a.js": true,
+    "package-lock.json": true,
+    "ob__handle": true
+  },
+  "output_files": {
+    "C:\\box-Codes-valC\\Teemo_server\\index.js": {
+      "input_mtime": 7,
+      "mtime": 1551946572.9908538
+    }
+  },
+  "isdir": true,
+  "mtime": 7,
+  "list": {
+    "package.json": {
+      "alive_time": 7,
+      "isdir": false,
+      "mtime": 1551850516.8958833
+    },
+    "index.js": {
+      "alive_time": 7,
+      "isdir": false,
+      "mtime": 1551946572.9908538
+    },
+    "o3__funcs": {
+      "alive_list": {
+        "reqname_to_priority.js": true,
+        "l0g.js": true
+      },
+      "alive_time": 7,
+      "isdir": true,
+      "mtime": 1,
+      "list": {
+        "reqname_to_priority.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551864552.6619418
+        },
+        "l0g.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551921590.4911819
+        }
+      },
+      "alive_list_time": 7
+    },
+    "oa__model": {
+      "alive_list": {
+        "connections.js": true,
+        "duels.js": true,
+        "waiting_room.js": true
+      },
+      "alive_time": 7,
+      "isdir": true,
+      "mtime": 5,
+      "list": {
+        "connections.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551941245.1218777
+        },
+        "duels.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551944341.2684386
+        },
+        "waiting_room.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551938237.488225
+        }
+      },
+      "alive_list_time": 7
+    },
+    "o1__globals": {
+      "alive_list": {
+        "dtag.js": true,
+        "require_v.js": true
+      },
+      "output_files": {
+        "C:\\box-Codes-valC\\Teemo_server\\index.js": {
+          "input_mtime": 1,
+          "mtime": 1551946572.9908538
+        }
+      },
+      "isdir": true,
+      "mtime": 1,
+      "list": {
+        "dtag.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551864477.99832
+        },
+        "require_v.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551867283.8185322
+        }
+      },
+      "alive_list_time": 7,
+      "alive_time": 7
+    },
+    "a.js": {
+      "alive_time": 7,
+      "isdir": false,
+      "mtime": 1551851708.725597
+    },
+    "package-lock.json": {
+      "alive_time": 7,
+      "isdir": false,
+      "mtime": 1551850516.905878
+    },
+    "ob__handle": {
+      "alive_list": {
+        "shoot.js": true,
+        "movement.js": true,
+        "accept_duel.js": true,
+        "duel.js": true,
+        "model.js": true,
+        "enter.js": true,
+        "request_duel.js": true,
+        "waiting.js": true
+      },
+      "alive_time": 7,
+      "isdir": true,
+      "mtime": 7,
+      "list": {
+        "shoot.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551866963.050769
+        },
+        "movement.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551866950.4759786
+        },
+        "accept_duel.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551946171.558595
+        },
+        "duel.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551946558.6557746
+        },
+        "model.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551866813.9397388
+        },
+        "enter.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551942236.2425199
+        },
+        "request_duel.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551945920.799014
+        },
+        "waiting.js": {
+          "alive_time": 7,
+          "isdir": false,
+          "mtime": 1551938232.527062
+        }
+      },
+      "alive_list_time": 7
+    }
+  },
+  "alive_list_time": 7,
+  "alive_time": 7,
+  "exclude_patterns": [
+    "node_modules",
+    "public",
+    "_.*",
+    "\\..*"
+  ]
+}
