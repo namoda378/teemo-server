@@ -1,12 +1,7 @@
 module.exports = function(connection,packet,res_obj) {
 	
+	const duel = connection._static.duel;
+	duel.users[connection.username].input = packet;
+	duel.update();
 
-	const lr_state = packet.lr_state;
-	if(lr_state){
-		if(lr_state === "left"){
-			connection._static.duel.users[connection.username].pos -= 12
-		}else{
-			connection._static.duel.users[connection.username].pos += 12
-		}
-	}
 }
