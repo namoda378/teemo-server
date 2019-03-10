@@ -12,13 +12,13 @@ fs.readdir(testFolder, (err, files) => {
   });
 });
 
-//^ forin o1__globals 
+//^ forin o1__globals
 //> require("./{{ erb -rei ~.+\.js~ -xf }}");
 require("./o1__globals/dtag");
 require("./o1__globals/require_v");
 //$
 
-//^ forin . 
+//^ forin .
 //> const {{ eb-1b -xf }} = require("./{{ erb -rei ~o3.+\.js~ -xf }}");
 const reqname_to_priority = require("./o3__funcs/reqname_to_priority");
 const l0g = require("./o3__funcs/l0g");
@@ -48,7 +48,7 @@ handle['duel_input'] = require("./ob__handle/duel_input");
 
 var WebSocketServer = require('websocket').server;
 var http = require('http');
- 
+
 var server = http.createServer(function(request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
     response.writeHead(404);
@@ -57,7 +57,7 @@ var server = http.createServer(function(request, response) {
 server.listen(8080, function() {
     console.log((new Date()) + ' Server is listening on port 8080');
 });
- 
+
 wsServer = new WebSocketServer({
     httpServer: server,
     // You should not use autoAcceptConnections for production
@@ -67,12 +67,12 @@ wsServer = new WebSocketServer({
     // to accept it.
     autoAcceptConnections: false
 });
- 
+
 function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
   return true;
 }
- 
+
 wsServer.on('request', function(request) {
     if (!originIsAllowed(request.origin)) {
       // Make sure we only accept requests from an allowed origin
@@ -80,8 +80,8 @@ wsServer.on('request', function(request) {
       console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
       return;
     }
-    
-    console.log(JSON.stringify(request));
+
+    //console.log(JSON.stringify(request));
 
     request["requestedProtocols"].push('echo-protocol');
 
@@ -109,7 +109,7 @@ wsServer.on('request', function(request) {
             // })
 
             // const context = {};
-            
+
             // req_list.forEach((packet)=>{
             //     handle(context,packet,res_obj)
             // })
