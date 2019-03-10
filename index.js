@@ -141,8 +141,7 @@ wsServer.on('request', function(request) {
 
 
     connection.on('close', function(reasonCode, description) {
-        // console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-        // console.log(`connection of conn_id : ${conn.conn_id}  closed`)
-        // connections.del(conn)
+        console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected. conn_id : '+connection.conn_id);
+        connections.del(connection)
     });
 });
