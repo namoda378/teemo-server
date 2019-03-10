@@ -23,7 +23,7 @@ const set_username = function(username){
 const set_duel = function(duel){
 	waiter_conn_id_mapping_by_username.__updated++;
 	delete waiter_conn_id_mapping_by_username[this.username];
-	this._static.duel = duel;
+	this.duel = duel;
 }
 
 const set_wait = function(){
@@ -42,17 +42,19 @@ const is_waiting = function(){
 
 connections.put = function(conn) {
 	// body...
+	l0gt("consume","connections.put is called");
+
 	let conn_id = 'conn'+(idx++);
-	connections[conn_id] = conn;
+	mapping_by_conn_id[conn_id] = conn;
 	conn.conn_id = conn_id;
 
     conn._consumable = {}
-    conn._static = {}
 
 	conn.set_username = set_username;
 	conn.set_duel = set_duel;
 	conn.set_wait = set_wait;
 	conn.is_waiting = is_waiting;
+	
 }
 
 connections.get_waiters = function(){
@@ -80,5 +82,33 @@ connections.del = function(conn){
 	delete mapping_by_username[conn.username];
 	if(waiter_conn_id_mapping_by_username[conn.username]){
 		delete waiter_conn_id_mapping_by_username[conn.username];
+	}
+}
+
+connections.del = function(conn){
+	delete mapping_by_conn_id[conn.conn_id];
+	delete mapping_by_username[conn.username];
+	if(waiter_conn_id_mapping_by_username[conn.username]){
+		delete waiter_conn_id_mapping_by_username[conn.username];
+	}
+}
+
+connections.consume = function(){
+	//l0gt("consume","consuming msgs")
+	for(let conn_id in mapping_by_conn_id){
+		// l0gt("consume","\t aaaaaa conn_id : " + conn_id);
+		const conn = mapping_by_conn_id[conn_id];
+
+
+		// l0gt("consume","\t connection identity : " + conn.identity);
+		const _consumable = conn._consumable;
+        
+        const res_obj = {};
+        for(let k in _consumable){
+            res_obj[k] = _consumable[k];
+			// l0gt("consume","\tconsuming msg : " + k)
+        }
+        conn.sendUTF(JSON.stringify(res_obj));
+        conn._consumable = {};
 	}
 }

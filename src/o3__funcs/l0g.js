@@ -52,4 +52,14 @@ l0g = function(...args) {
 }
 
 
+
+
+dtag['consume'] = true
+l0gt = function(tag,s){
+	if(dtag[tag]){
+		console.log(s);
+	}
+}
+
+
 module.exports = l0g;

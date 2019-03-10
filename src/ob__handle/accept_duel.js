@@ -1,4 +1,4 @@
-module.exports = function(connection,packet,res_obj) {
+module.exports = function(connection,packet) {
 	
 	const username = connection.username;	
 	const opponent_username = packet.username;

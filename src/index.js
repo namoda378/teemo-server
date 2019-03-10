@@ -75,6 +75,30 @@ function originIsAllowed(origin) {
 
 
 
+
+let prev_now = Date.now();
+let next_update_active_duels_after = prev_now;
+let next_update_msgs_after = prev_now;
+
+setInterval(()=>{
+    const now = Date.now();
+    
+    if(now > next_update_active_duels_after){
+        duels.update_active(prev_now,now);
+        let tmp = now + 50;
+        next_update_active_duels_after = tmp - (tmp%50);
+    }
+
+    if(now > next_update_msgs_after){
+        connections.consume();
+        let tmp = now + 500;
+        next_update_msgs_after = tmp - (tmp%500);
+    }
+
+    prev_now = now;
+}, 50);
+
+
 wsServer.on('request', function(request) {
     if (!originIsAllowed(request.origin)) {
       // Make sure we only accept requests from an allowed origin
@@ -89,13 +113,14 @@ wsServer.on('request', function(request) {
 
     var connection = request.accept('echo-protocol', request.origin);
     connections.put(connection);
+    connections.identity = "i am a connection";
 
     console.log((new Date()) + ' Connection accepted.');
 
 
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
-            console.log('Received Message: ' + message.utf8Data);
+            //console.log('Received Message: ' + message.utf8Data);
 
             let req_obj = null;
             try {
@@ -106,38 +131,14 @@ wsServer.on('request', function(request) {
                 return;
             }
 
-            // req_list.sort((a,b)=>{
-            //     return reqname_to_priority(a.reqnames)-reqname_to_priority(b.reqnames)
-            // })
-
-            // const context = {};
-
-            // req_list.forEach((packet)=>{
-            //     handle(context,packet,res_obj)
-            // })
-            const res_obj = {};
-
             ["enter","model","movement","shoot","request_duel","waiting","accept_duel","duel_input"].forEach((reqname)=>{
                 if(req_obj[reqname] && handle[reqname]){
-                    handle[reqname](connection,req_obj[reqname],res_obj);
-                    l0g("reqname "+reqname+" exists in req_obj","rrcyc")
+                    handle[reqname](connection,req_obj[reqname]);
+                    // l0g("reqname "+reqname+" exists in req_obj","rrcyc")
                 }else{
-                    l0g("reqname "+reqname+" does NOT exist in req_obj","rrcyc")
+                    // l0g("reqname "+reqname+" does NOT exist in req_obj","rrcyc")
                 }
-            })
-
-            const _consumable = connection._consumable;
-            for(let k in _consumable){
-                res_obj[k] = _consumable[k];
-            }
-            connection._consumable = {};
-
-            const _static = connection._static;
-            for(let k in _static){
-                res_obj[k] = _static[k];
-            }
-
-            connection.sendUTF(JSON.stringify(res_obj));
+            });
         }
     });
 

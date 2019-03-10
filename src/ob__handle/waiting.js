@@ -1,6 +1,7 @@
-module.exports = function(context,packet,res_obj) {
+module.exports = function(connection,packet) {
+	let _consumable = connection._consumable;
 	
 	//pre-commit-change : now waiting_room response is waiters
-	res_obj.waiters = connections.get_waiters();
+	_consumable.waiters = connections.get_waiters();
 	
 }

@@ -1,9 +1,11 @@
-module.exports = function(connection,packet,res_obj) {
+module.exports = function(connection,packet) {
+	let _consumable = connection._consumable;
+	l0gt("consume","\t connection identity : " + connection.identity);
 	
 	if(!connection.username){
-		res_obj.request_duel = {status:"failed - login first"};
+		_consumable.request_duel = {status:"failed - login first"};
 	}else if(packet.username === connection.username){
-		res_obj.request_duel = {status:"failed - cannot duel yourself"};
+		_consumable.request_duel = {status:"failed - cannot duel yourself"};
 	}else{
 		let opponent_conn = connections.get_by_username(packet.username);
 		if(opponent_conn){
@@ -15,17 +17,17 @@ module.exports = function(connection,packet,res_obj) {
 					opponent_conn._consumable['received_request_duel'] = {username:connection.username}
 					packet.request_duel = {status:"success - requested duel"};
 				}else{
-					res_obj.request_duel = {status:"failed - opponent is getting other requests"};
+					_consumable.request_duel = {status:"failed - opponent is getting other requests"};
 				}
 			}else{
 
-				res_obj.request_duel = {status:"failed - opponent is dueling"};
+				_consumable.request_duel = {status:"failed - opponent is dueling"};
 				
 			}
 
 		}else{
 
-			res_obj.request_duel = {status:"failed - opponent is not connected"};
+			_consumable.request_duel = {status:"failed - opponent is not connected"};
 		
 		}
 	}

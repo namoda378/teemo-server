@@ -1,7 +1,6 @@
 module.exports = function(connection,packet,res_obj) {
 	
-	const duel = connection._static.duel;
+	const duel = connection.duel;
 	duel.users[connection.username].input = packet;
-	duel.update();
 
 }

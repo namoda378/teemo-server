@@ -1,5 +1,7 @@
 
 const list = [];
+let active_duels = [];
+
 
 const game_width = 320;
 const game_height = 480;
@@ -28,26 +30,10 @@ function check_dead(){
 	}
 }
 
-const update = function(){
-	const now = Date.now();
-	
-	if(now < this.next_update_after || this.state === "finished"){
-		return;
-	}
-
-	const prev_now = this.prev_now;
-	this.prev_now = now;
-
-	let now_add_50 = now + 50;
-	this.next_update_after = now_add_50 - (now_add_50%50);
-
+const update = function(prev_now,now){
 	const frame_len = now - prev_now;
-
-
-
 	// console.log("frame len : " + frame_len); //#ball traks
 	// console.log("this.next_update_after : " + this.next_update_after); //#ball traks
-
 
 	for(let username in this.users){
 		const user = this.users[username];
@@ -149,6 +135,27 @@ const update = function(){
 
 duels = {};
 
+duels.update_active = function(prev_now,now){
+	active_duels = active_duels.filter((duel)=>{
+		if(duel.state !== "finished"){
+			return true;
+		}else{
+			for(let username in duel.users){
+				connections.get_by_username(username).duel = null;
+			}
+		}
+	});
+
+	active_duels.forEach((duel)=>{
+		duel.update(prev_now,now);
+		const duel_obj = {duel};
+		for(let username in duel.users){
+			let conn = connections.get_by_username(username)
+			if(conn){conn.sendUTF(JSON.stringify(duel_obj));}
+		}
+	});
+}
+
 duels.new = function(usernames) {
 	// body...
 	const now = Date.now();
@@ -156,7 +163,6 @@ duels.new = function(usernames) {
 	const duel = {};
 	duel.duel_id = duel_id;
 	duel.state = "ready";
-	duel.next_update_after = now;
 	duel.prev_now = now;
 
 	duel.users = {};
@@ -178,6 +184,7 @@ duels.new = function(usernames) {
 	duel.opponent_of[usernames[1]] = usernames[0];
 
 	list.push(duel);
+	active_duels.push(duel);
 	duel.update = update;
 	duel.check_dead = check_dead;
 	return duel;
