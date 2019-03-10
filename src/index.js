@@ -121,7 +121,6 @@ wsServer.on('request', function(request) {
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
             //console.log('Received Message: ' + message.utf8Data);
-
             let req_obj = null;
             try {
                 req_obj = JSON.parse(message.utf8Data);
@@ -129,6 +128,10 @@ wsServer.on('request', function(request) {
                 l0g("@@rrc01 req_str cannot be parsed to JSON ","rrcyc");
                 connection.sendUTF('{"msg":"ecode-101"}')
                 return;
+            }
+
+            if(!connection.username && req_obj.has_username){
+                connection.set_username(req_obj.has_username.username);
             }
 
             ["enter","model","movement","shoot","request_duel","waiting","accept_duel","duel_input"].forEach((reqname)=>{

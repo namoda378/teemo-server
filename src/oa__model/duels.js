@@ -1,5 +1,7 @@
 
 const list = [];
+const mapping_by_username = {};
+
 let active_duels = [];
 
 
@@ -115,21 +117,6 @@ const update = function(prev_now,now){
 			return (ball.y < 480)&&(!ball.hit)
 		});
 	} 
-
-
-	if(this.check_dead()){
-		this.state = "finished";
-		for(let k in this.users){
-			const conn = connections.get_by_username(k)
-			if(conn.username === this.dead){
-				conn._consumable.duel_result = {status:"U have LOST !!"}
-			}else{
-				conn._consumable.duel_result = {status:"U have WON !!"}
-			}
-			conn.set_wait();
-		}
-
-	}
 }
 
 
@@ -137,12 +124,19 @@ duels = {};
 
 duels.update_active = function(prev_now,now){
 	active_duels = active_duels.filter((duel)=>{
-		if(duel.state !== "finished"){
-			return true;
-		}else{
+		if(duel.check_dead()){
+			duel.state = "finished";
 			for(let username in duel.users){
-				connections.get_by_username(username).duel = null;
+				const conn = connections.get_by_username(username);
+				if(conn.username === duel.dead){
+					conn._consumable.duel_result = {status:"U have LOST !!"}
+				}else{
+					conn._consumable.duel_result = {status:"U have WON !!"}
+				}
+				conn.set_wait();
 			}
+		}else{
+			return true;
 		}
 	});
 
@@ -151,9 +145,16 @@ duels.update_active = function(prev_now,now){
 		const duel_obj = {duel};
 		for(let username in duel.users){
 			let conn = connections.get_by_username(username)
-			if(conn){conn.sendUTF(JSON.stringify(duel_obj));}
+			if(conn){
+				console.log(JSON.stringify(duel_obj));
+				conn.sendUTF(JSON.stringify(duel_obj));
+			}
 		}
 	});
+}
+
+duels.get_by_username = function(username){
+	return mapping_by_username[username];
 }
 
 duels.new = function(usernames) {
@@ -168,6 +169,7 @@ duels.new = function(usernames) {
 	duel.users = {};
 	
 	usernames.forEach((username)=>{
+		mapping_by_username[username] = duel;
 		const user = {};
 		duel.users[username] = user;
 		user.x = 160;

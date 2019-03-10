@@ -23,7 +23,6 @@ const set_username = function(username){
 const set_duel = function(duel){
 	waiter_conn_id_mapping_by_username.__updated++;
 	delete waiter_conn_id_mapping_by_username[this.username];
-	this.duel = duel;
 }
 
 const set_wait = function(){
@@ -74,14 +73,6 @@ connections.del_by_username = function(username){
 	if(conn){
 		delete mapping_by_username[username]
 		delete mapping_by_conn_id[conn.conn_id]; 
-	}
-}
-
-connections.del = function(conn){
-	delete mapping_by_conn_id[conn.conn_id];
-	delete mapping_by_username[conn.username];
-	if(waiter_conn_id_mapping_by_username[conn.username]){
-		delete waiter_conn_id_mapping_by_username[conn.username];
 	}
 }
 
