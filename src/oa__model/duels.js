@@ -128,12 +128,14 @@ duels.update_active = function(prev_now,now){
 			duel.state = "finished";
 			for(let username in duel.users){
 				const conn = connections.get_by_username(username);
-				if(conn.username === duel.dead){
-					conn._consumable.duel_result = {status:"U have LOST !!"}
-				}else{
-					conn._consumable.duel_result = {status:"U have WON !!"}
+				if(conn){
+					if(conn.username === duel.dead){
+						conn._consumable.duel_result = {status:"U have LOST !!"}
+					}else{
+						conn._consumable.duel_result = {status:"U have WON !!"}
+					}
+					conn.set_wait();
 				}
-				conn.set_wait();
 				delete mapping_by_username[username];
 			}
 		}else{

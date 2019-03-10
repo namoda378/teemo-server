@@ -130,11 +130,11 @@ wsServer.on('request', function(request) {
                 return;
             }
 
-            if(!connection.username && req_obj.has_username){
+            if(!connection.username && req_obj.has_username && !connections.get_by_username(req_obj.has_username.username)){
                 connection.set_username(req_obj.has_username.username);
             }
 
-            ["enter","model","movement","shoot","request_duel","waiting","accept_duel","duel_input"].forEach((reqname)=>{
+            ["enter","request_duel","waiting","accept_duel","duel_input"].forEach((reqname)=>{
                 if(req_obj[reqname] && handle[reqname]){
                     handle[reqname](connection,req_obj[reqname]);
                     // l0g("reqname "+reqname+" exists in req_obj","rrcyc")
