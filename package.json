@@ -1,13 +1,12 @@
 {
   "name": "teemo_server",
-  "version": "1.0.0",
-  "description": "teemo_server official ws",
+  "version": "1.0.1",
+  "description": "Node.js on Docker",
+  "author": "Namo Ler <namoda378@gmail.com>",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "websocket": "^1.0.28"
   }
