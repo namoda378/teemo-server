@@ -1,2 +1,5 @@
-_**
-node**
+/src/_**
+/src/node**
+/src/package.*
+/node**
+/_**
