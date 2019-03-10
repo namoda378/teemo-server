@@ -3,6 +3,6 @@ module.exports = function(connection,packet) {
 	if(duel){
 		duel.users[connection.username].input = packet;
 	}else{
-		
+		connection._consumable.duel = {state:"finished"};	
 	}
 }

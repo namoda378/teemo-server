@@ -134,6 +134,7 @@ duels.update_active = function(prev_now,now){
 					conn._consumable.duel_result = {status:"U have WON !!"}
 				}
 				conn.set_wait();
+				delete mapping_by_username[username];
 			}
 		}else{
 			return true;
@@ -146,7 +147,6 @@ duels.update_active = function(prev_now,now){
 		for(let username in duel.users){
 			let conn = connections.get_by_username(username)
 			if(conn){
-				console.log(JSON.stringify(duel_obj));
 				conn.sendUTF(JSON.stringify(duel_obj));
 			}
 		}
