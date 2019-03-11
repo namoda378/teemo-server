@@ -10,7 +10,7 @@ RUN npm install
 
 COPY ./src/ /usr/src/app/
 
-COPY ./node_modules_overwrite /user/src/node_modules
+COPY ./node_modules_overwrite/ /usr/src/app/node_modules/
 
 EXPOSE 8080
 CMD [ "npm", "start" ]
