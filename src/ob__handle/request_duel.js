@@ -1,6 +1,6 @@
 module.exports = function(connection,packet) {
 	let _consumable = connection._consumable;
-	l0gt("consume","\t connection identity : " + connection.identity);
+	//l0gt("consume","\t connection identity : " + connection.identity);
 	
 	if(!connection.username){
 		_consumable.request_duel = {status:"failed - login first"};
