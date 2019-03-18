@@ -1,0 +1,10 @@
+[Unit]
+Description=activates sysd_puller every 10 sec
+
+[Timer]
+OnActiveSec=3
+OnUnitActiveSec=10
+AccuracySec=5
+
+[Install]
+WantedBy=default.target

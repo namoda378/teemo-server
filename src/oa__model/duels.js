@@ -17,9 +17,10 @@ const user_right_limit = game_width - user_radius;
 
 function check_dead(){	
 	const dead_list = [];
+	const packet = this.packet;
 
-	for(let name in this.users){
-		if(this.users[name].HP <= 0){
+	for(let name in packet.users){
+		if(packet.users[name].HP <= 0){
 			dead_list.push(name);			
 		}
 	}
@@ -34,32 +35,37 @@ function check_dead(){
 
 const update = function(prev_now,now){
 	const frame_len = now - prev_now;
+	const packet = this.packet;
 	// console.log("frame len : " + frame_len); //#ball traks
 	// console.log("this.next_update_after : " + this.next_update_after); //#ball traks
 
-	for(let username in this.users){
-		const user = this.users[username];
+	for(let username in packet.users){
+		const user = packet.users[username];
+		const user_sd = this.users[username];
 
-		user.MP += MP_gen_per_sec * (frame_len/1000);
+		user.MP += MP_gen_per_sec * (frame_len/1000).toFixed(3);
 		user.MP = (user.MP>100)?100:user.MP;
 
-		const input = user.input;
+		const input = user_sd.input;
 
 		const vel = 12;
 
 		if(input.lr_state){
 			if(input.lr_state === "right"){
 				user.x += vel;
+				user.x = user.x > user_right_limit ? user_right_limit:user.x;
 			}else{
 				user.x -= vel;
+				user.x = user.x < user_left_limit ? user_left_limit:user.x;
 			}
 		}
+
 
 		if(input.bg_touch){
 
 			console.log(JSON.stringify(input.bg_touch));
 
-			user.kii += kii_add_per_sec * (frame_len/1000);
+			user.kii += kii_add_per_sec * (frame_len/1000).toFixed(3);
 			user.kii = (user.kii>user.MP)?user.MP:user.kii;
 			user.prev_bg_touch = input.bg_touch;
 
@@ -80,15 +86,16 @@ const update = function(prev_now,now){
 				const idx = user.ball_idx++;
 				const x = user.x;
 				const y = 30
-				const xVel = 0.5*(user.kii/100)*Math.cos(rad);
-				const yVel = 0.5*(user.kii/100)*Math.sin(rad); 
+				const xVel = (user.kii/100)*Math.cos(rad).toFixed(3);
+				const yVel = (user.kii/100)*Math.sin(rad).toFixed(3); 
 
 				user.MP -= user.kii;
 
-				const crit_t_start = now + 430/yVel; 
+				const crit_t_start = now + 410/yVel; 
 				const crit_t_end = now + 460/yVel;
 
-				user.balls.push({idx,x,y,xVel,yVel,crit_t_start,crit_t_end});
+				user.balls.push({idx,x,y});
+				user_sd.balls[idx] = {xVel,yVel,crit_t_start,crit_t_end};
 
 				user.kii = 0;
 			}
@@ -98,16 +105,17 @@ const update = function(prev_now,now){
 		// console.log(JSON.stringify(user.balls)); ////#ball traks
 		// console.log(">>"); //#ball traks
 
-		let opponent = this.users[this.opponent_of[username]];
+		let opponent = packet.users[this.opponent_of[username]];
 		opponent_x = 320 - opponent.x;
 
 		user.balls = user.balls.filter((ball)=>{ 
-			ball.x += ball.xVel * frame_len; 
-			ball.y += ball.yVel * frame_len; 
+			const {xVel,yVel,crit_t_start,crit_t_end} = user_sd.balls[ball.idx];
+			ball.x += xVel * frame_len; 
+			ball.y += yVel * frame_len; 
 
 			// console.log(">> ball " + ball.idx + " has moved to " + ball.x +" / " + ball.y);	 //#ball traks
 
-			if( prev_now<ball.crit_t_end && ball.crit_t_start < now ){
+			if( prev_now<crit_t_end && crit_t_start < now ){
 				if( ball.x -20 < opponent_x && opponent_x <  ball.x + 20 ){
 					opponent.HP -= 10;
 					ball.hit = true;
@@ -145,11 +153,16 @@ duels.update_active = function(prev_now,now){
 
 	active_duels.forEach((duel)=>{
 		duel.update(prev_now,now);
-		const duel_obj = {duel};
 		for(let username in duel.users){
 			let conn = connections.get_by_username(username)
 			if(conn){
-				conn.sendUTF(JSON.stringify(duel_obj));
+				conn._consumable.duel = duel.packet;
+			}else{
+				const user_sd = duel.users[username];
+				user_sd.lost_conn_count++
+				if(user_sd.lost_conn_count>40){
+					duel.packet.users[username].HP = -1;
+				}
 			}
 		}
 	});
@@ -164,28 +177,39 @@ duels.new = function(usernames) {
 	const now = Date.now();
 	const duel_id = list.length;
 	const duel = {};
-	duel.duel_id = duel_id;
-	duel.state = "ready";
-	duel.prev_now = now;
+	const packet = {};
+	duel.packet = packet;
 
-	duel.users = {};
+	packet.duel_id = duel_id;
+	packet.state = "ready";
+	packet.prev_now = now;
+
+	duel.opponent_of = {}
+	duel.opponent_of[usernames[0]] = usernames[1];
+	duel.opponent_of[usernames[1]] = usernames[0];
+
+	packet.users = {};
+	duel.users = {}
 	
 	usernames.forEach((username)=>{
 		mapping_by_username[username] = duel;
+		
 		const user = {};
-		duel.users[username] = user;
+		packet.users[username] = user;
 		user.x = 160;
 		user.HP = 100;
 		user.MP = 0;
 		user.kii = 0;
 		user.ball_idx = 0;
-		user.input = {};
 		user.balls = [];
+		
+		const user_sd = {};
+		duel.users[username] = user_sd;
+		user_sd.lost_conn_count = 0;
+		user_sd.balls = {};
+		user_sd.input = {};
 	})
 
-	duel.opponent_of = {}
-	duel.opponent_of[usernames[0]] = usernames[1];
-	duel.opponent_of[usernames[1]] = usernames[0];
 
 	list.push(duel);
 	active_duels.push(duel);

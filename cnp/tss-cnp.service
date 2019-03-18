@@ -1,0 +1,10 @@
+[Unit]
+Description=update & download sysd files to s3_sysd_pulled and reload them
+Requires=default.target
+Requires=default.target
+After=network.target
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/tss/cnp/cnp

@@ -1,0 +1,8 @@
+cd /root/tss/cnp
+
+chmod 700 cnp
+cp tss-cnp.service tss-cnp.timer /etc/systemd/system
+systemctl daemon-reload
+
+systemctl enable tss-cnp.timer
+systemctl start tss-cnp.timer

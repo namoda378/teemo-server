@@ -1,0 +1,4 @@
+cd /root/tss/cnp
+
+systemctl disable tss-cnp.timer
+systemctl stop tss-cnp.timer

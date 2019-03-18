@@ -1,0 +1,1 @@
+aws s3 sync . s3://cb59/tss --delete --exclude ".*" --exclude "_*" 

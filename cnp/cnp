@@ -1,0 +1,38 @@
+#!/bin/bash
+
+cd /root
+
+
+mkdir -p tss
+mkdir -p tss-nonsync
+
+aws s3 sync s3://cb59/tss /root/tss --delete --exact-timestamps > /root/tss-nonsync/s3sync-log
+
+CURDT="`date +%Y%m%d%H%M%S`"
+
+VER=0
+
+if [[ -f /root/tss-nonsync/ver ]];then
+  VER=`cat /root/tss-nonsync/ver`
+fi
+
+echo server version is `cat /root/tss/ver` version here is `cat /root/tss-nonsync/ver`
+
+  SERVER_VER=`cat tss/ver`
+  if [ "$VER" != "$SERVER_VER" ];then
+
+    echo "new build at : $CURDT" >> /root/tss-nonsync/ver-log
+
+    docker build -t tss /root/tss
+    echo "$SERVER_VER" > /root/tss-nonsync/ver
+
+    docker stop teemo
+    docker rm teemo
+    docker run -d --name="teemo" -p 3002:8080 tss
+  fi
+
+LINE=`docker ps | grep teemo`
+if [[ ! $LINE == *"Up"* ]];then
+  docker rm teemo
+  docker run -d --name="teemo" -p 3002:8080 tss
+fi
